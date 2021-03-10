@@ -28,23 +28,13 @@ resource "azurerm_api_management" "VodafDev" {
 
   sku_name = "Developer_1"
 }
-
   policy {
     xml_content = <<XML
     <policies>
-        <inbound>
-            <base />
-            <rate-limit calls="30" renewal-period="10" />
-        </inbound>
-        <backend>
-            <base />
-        </backend>
-        <outbound>
-            <base />
-        </outbound>
-        <on-error>
-            <base />
-        </on-error>
+      <inbound />
+      <backend />
+      <outbound />
+      <on-error />
     </policies>
 XML
 
