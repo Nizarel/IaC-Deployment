@@ -28,17 +28,6 @@ resource "azurerm_api_management" "VodafDev" {
 
   sku_name = "Developer_1"
 }
-  policy {
-    xml_content = <<XML
-    <policies>
-      <inbound />
-      <backend />
-      <outbound />
-      <on-error />
-    </policies>
-XML
-
-  }
 resource "azurerm_api_management_api" "VodafDev" {
   name                = "example-api"
   resource_group_name = azurerm_resource_group.VodafDev.name
