@@ -38,7 +38,7 @@ resource "azurerm_api_management_api" "VodafDev" {
   protocols           = ["https"]
 
   import {
-    #content_format = "swagger-link-json"
+    content_format = "swagger-link-json"
     content_value  = "http://kub.nizare.biz/api"
   }
 }
