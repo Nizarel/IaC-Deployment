@@ -1,4 +1,4 @@
-resource_group_name     = "My_Terraform_RG"
-resource_group_location = "West Europe"
-app_service_plan_name   = "my-appserviceplan"
-app_service_name        = "terraform-demo-009"
+resource_group_name     = "ias_rd"
+resource_group_location = "east us"
+app_service_plan_name   = "vodappplan"
+app_service_name        = "vodapp0002"
