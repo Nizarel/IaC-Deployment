@@ -13,15 +13,53 @@ provider "azurerm" {
 }
 
 # Create a resource group
-resource "azurerm_resource_group" "example" {
-  name     = "example-resources"
-  location = "West Europe"
+resource "azurerm_resource_group" "VodafDev" {
+  name     = "VodafDev-rg"
+  location = "eastus"
 }
 
 # Create a virtual network within the resource group
-resource "azurerm_virtual_network" "example" {
-  name                = "example-network"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-  address_space       = ["10.0.0.0/16"]
+resource "azurerm_api_management" "VodafDev" {
+  name                = "VodafDev-apim"
+  location            = azurerm_resource_group.VodafDev.location
+  resource_group_name = azurerm_resource_group.VodafDev.name
+  publisher_name      = "Vodafone"
+  publisher_email     = "vodafone@terraform.io"
+
+  sku_name = "Developer_1"
+}
+
+  policy {
+    xml_content = <<XML
+    <policies>
+        <inbound>
+            <base />
+            <rate-limit calls="30" renewal-period="10" />
+        </inbound>
+        <backend>
+            <base />
+        </backend>
+        <outbound>
+            <base />
+        </outbound>
+        <on-error>
+            <base />
+        </on-error>
+    </policies>
+XML
+
+  }
+resource "azurerm_api_management_api" "VodafDev" {
+  name                = "example-api"
+  resource_group_name = azurerm_resource_group.VodafDev.name
+  api_management_name = azurerm_api_management.VodafDev.name
+  revision            = "1"
+  display_name        = "POI API"
+  path                = "poi"
+  protocols           = ["https"]
+
+  import {
+    #content_format = "swagger-link-json"
+    content_value  = "http://kub.nizare.biz/api"
+  }
 }
