@@ -4,7 +4,7 @@ FrontEnd
 	- Set FE Vnet
 	- Set AzuraFirewallSubnet
 	- Jbox-subnet
-    - FW-01 (Firewall)
+         - FW-01 (Firewall)
 
 Backend
 	- Set BE Resource Group
@@ -20,3 +20,5 @@ Peering
 		○ NAT Rule to allow RDP to jbox from anywhere
 		○ NAT rule to allow traffic to webserver from anywhere
         Allowing RDP to webserver from Jbox-vm01
+
+![image](https://user-images.githubusercontent.com/46408023/111848629-c7859c80-890b-11eb-81a3-19db81954dfa.png)
