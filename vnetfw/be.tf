@@ -8,7 +8,6 @@
 resource "azurerm_resource_group" "be-rg" {
   name     = "be-rg"
   location = "eastus"
-
 }
 
 resource "azurerm_virtual_network" "be-rg" {
@@ -65,6 +64,17 @@ resource "azurerm_network_security_group" "be-rg" {
         source_address_prefix      = "*"
         destination_address_prefix = "*"
      }
+  security_rule {
+    name                       = "rdp"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3389"
+    source_address_prefix      = "${azurerm_network_interface.jbox-rg.private_ip_address}/32"
+    destination_address_prefix = "${azurerm_network_interface.be-rg.private_ip_address}/32"
+  }
   
 
   tags = {
