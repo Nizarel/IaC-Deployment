@@ -91,7 +91,7 @@ resource "azurerm_virtual_machine" "be-rg" {
     managed_disk_type = "Standard_LRS"
   }
   os_profile {
-    computer_name  = azurerm_virtual_machine.be-rg.name
+    computer_name  = "Web-vm01"
     admin_username = "testadmin"
     admin_password = "Password1234!"
   }
