@@ -53,6 +53,7 @@ resource "azurerm_network_security_group" "be-rg" {
     source_address_prefix      = "*"
     destination_address_prefix = azurerm_network_interface.be-rg.private_ip_address/32
   }
+  
 
   tags = {
     environment = "Production"
@@ -99,5 +100,24 @@ resource "azurerm_virtual_machine" "be-rg" {
   }
   tags = {
     environment = "staging"
+  }
+}
+
+resource "azurerm_virtual_machine_extension" "be-rg" {
+  name                 = "Web-apache-ext"
+  virtual_machine_id   = azurerm_virtual_machine.be-rg.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.0"
+
+  settings = <<SETTINGS
+    {
+              "commandToExecute" : "apt-get -y update && apt-get install -y apache2"
+    }
+SETTINGS
+
+
+  tags = {
+    environment = "Production"
   }
 }
