@@ -53,6 +53,18 @@ resource "azurerm_network_security_group" "be-rg" {
     source_address_prefix      = "*"
     destination_address_prefix = azurerm_network_interface.be-rg.private_ip_address/32
   }
+
+      security_rule {
+        name                       = "SSH"
+        priority                   = 1001
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "22"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+     }
   
 
   tags = {
@@ -93,7 +105,7 @@ resource "azurerm_virtual_machine" "be-rg" {
   os_profile {
     computer_name  = "Web-vm01"
     admin_username = "testadmin"
-    admin_password = "Password1234!"
+    admin_password = "P@$$w0rd1234!"
   }
   os_profile_linux_config {
     disable_password_authentication = false
