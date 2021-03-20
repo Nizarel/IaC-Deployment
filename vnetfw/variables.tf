@@ -36,7 +36,7 @@ variable "web-sub-name" {
 }
 variable "web-vm-name" {
   type    = string
-  default = "Web-vm01"
+  default = "Web"
 }
 variable "jb-rg-name" {
   type    = string
@@ -44,7 +44,7 @@ variable "jb-rg-name" {
 }
 variable "jb-vm-name" {
   type    = string
-  default = "jbox-vm01"
+  default = "jbox"
 }
 variable "admin_username" {
   type    = string

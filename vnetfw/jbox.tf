@@ -5,13 +5,13 @@
 # nsg rule to allow RDP from anywhere to the jumpbox
 
 resource "azurerm_resource_group" "jbox-rg" {
-  name     = "jbox-rg"
-  location = "eastus"
+  name     = var.jb-rg-name
+  location = var.location-name
 
 }
 
 resource "azurerm_network_interface" "jbox-rg" {
-  name                = "jbox-nic"
+  name                = "${var.jb-vm-name}-nic"
   location            = azurerm_resource_group.jbox-rg.location
   resource_group_name = azurerm_resource_group.jbox-rg.name
 
@@ -23,7 +23,7 @@ resource "azurerm_network_interface" "jbox-rg" {
 }
 
 resource "azurerm_network_security_group" "jbox-rg" {
-  name                = "jbox-nsg"
+  name                = "${var.jb-vm-name}-nsg"
   location            = azurerm_resource_group.jbox-rg.location
   resource_group_name = azurerm_resource_group.jbox-rg.name
 
@@ -48,12 +48,12 @@ resource "azurerm_network_interface_security_group_association" "jbox-rg" {
 }
 
 resource "azurerm_windows_virtual_machine" "jbox-rg" {
-  name                  = "jbox-vm01"
+  name                  = "${var.jb-vm-name}-vm01"
   resource_group_name   = azurerm_resource_group.jbox-rg.name
   location              = azurerm_resource_group.jbox-rg.location
   size                  = "Standard_DS1_v2"
-  admin_username        = "adminuser"
-  admin_password        = "P@$$w0rd1234!"
+  admin_username        = var.admin_username
+  admin_password        = var.admin_password
   network_interface_ids = [azurerm_network_interface.jbox-rg.id]
 
   os_disk {

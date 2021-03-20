@@ -6,26 +6,26 @@
 #    Web-VM01
 
 resource "azurerm_resource_group" "be-rg" {
-  name     = "be-rg"
-  location = "eastus"
+  name     = var.be-rg-name
+  location = var.location-name
 }
 
 resource "azurerm_virtual_network" "be-rg" {
-  name                = "web-vnet"
+  name                = var.web-vnet-name
   address_space       = ["10.0.2.0/23"]
   location            = azurerm_resource_group.be-rg.location
   resource_group_name = azurerm_resource_group.be-rg.name
 }
 
 resource "azurerm_subnet" "be-rg" {
-  name                 = "web-subnet"
+  name                 = var.web-sub-name
   resource_group_name  = azurerm_resource_group.be-rg.name
   virtual_network_name = azurerm_virtual_network.be-rg.name
   address_prefixes     = ["10.0.2.0/24"]
 }
 
 resource "azurerm_network_interface" "be-rg" {
-  name                = "web-nic"
+  name                = "${var.web-vm-name}-nic"
   location            = azurerm_resource_group.be-rg.location
   resource_group_name = azurerm_resource_group.be-rg.name
 
@@ -37,7 +37,7 @@ resource "azurerm_network_interface" "be-rg" {
 }
 
 resource "azurerm_network_security_group" "be-rg" {
-  name                = "web-nsg"
+  name                = "${var.web-vm-name}-nsg"
   location            = azurerm_resource_group.be-rg.location
   resource_group_name = azurerm_resource_group.be-rg.name
 
@@ -89,7 +89,7 @@ resource "azurerm_network_interface_security_group_association" "be-rg" {
 }
 
 resource "azurerm_virtual_machine" "be-rg" {
-  name                  = "Web-vm01"
+  name                  = "${var.web-vm-name}-vm01"
   location              = azurerm_resource_group.be-rg.location
   resource_group_name   = azurerm_resource_group.be-rg.name
   network_interface_ids = [azurerm_network_interface.be-rg.id]
@@ -108,15 +108,15 @@ resource "azurerm_virtual_machine" "be-rg" {
     version   = "latest"
   }
   storage_os_disk {
-    name              = "web-osdisk"
+    name              = "${var.web-vm-name}-osdisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
   os_profile {
-    computer_name  = "Web-vm01"
-    admin_username = "testadmin"
-    admin_password = "P@$$w0rd1234!"
+    computer_name  = "${var.web-vm-name}-vm01"
+    admin_username = var.admin_username
+    admin_password = var.admin_password
   }
   os_profile_linux_config {
     disable_password_authentication = false
