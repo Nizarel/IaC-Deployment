@@ -50,7 +50,8 @@ resource "azurerm_network_security_group" "be-rg" {
     source_port_range          = "*"
     destination_port_range     = "80"
     source_address_prefix      = "*"
-    destination_address_prefix = azurerm_network_interface.be-rg.private_ip_address / 32
+    destination_address_prefix = "${azurerm_network_interface.be-rg.private_ip_address}/32"
+    
   }
 
   security_rule {

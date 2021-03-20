@@ -36,7 +36,8 @@ resource "azurerm_network_security_group" "jbox-rg" {
     source_port_range          = "*"
     destination_port_range     = "3389"
     source_address_prefix      = "*"
-    destination_address_prefix = azurerm_network_interface.jbox-rg.private_ip_address / 32
+    destination_address_prefix = "${azurerm_network_interface.jbox-rg.private_ip_address}/32"
+    
   }
 
 }
