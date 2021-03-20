@@ -20,23 +20,23 @@ resource "azurerm_firewall_nat_rule_collection" "fw-rg" {
   action              = "Dnat"
 
   rule {
-    name = "webrule"
-    source_addresses = ["*"]
-    destination_ports = ["80"]
+    name                  = "webrule"
+    source_addresses      = ["*"]
+    destination_ports     = ["80"]
     destination_addresses = [azurerm_public_ip.fw-rg.ip_address]
-    translated_port = 80
-    translated_address = azurerm_network_interface.be-rg.private_ip_address
-    protocols = ["TCP"]
+    translated_port       = 80
+    translated_address    = azurerm_network_interface.be-rg.private_ip_address
+    protocols             = ["TCP"]
   }
-  
+
   rule {
-    name = "jboxrule"
-    source_addresses = ["*"]
-    destination_ports = ["3389"]
+    name                  = "jboxrule"
+    source_addresses      = ["*"]
+    destination_ports     = ["3389"]
     destination_addresses = [azurerm_public_ip.fw-rg.ip_address]
-    translated_port = 3389
-    translated_address = azurerm_network_interface.jbox-rg.private_ip_address
-    protocols = ["TCP"]
+    translated_port       = 3389
+    translated_address    = azurerm_network_interface.jbox-rg.private_ip_address
+    protocols             = ["TCP"]
   }
 
 }

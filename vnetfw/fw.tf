@@ -30,14 +30,14 @@ resource "azurerm_subnet" "fw-rg-01" {
   name                 = "AzureFirewallSubnet"
   resource_group_name  = azurerm_resource_group.fw-rg.name
   virtual_network_name = azurerm_virtual_network.fw-rg.name
-  address_prefixes      = ["10.0.0.0/26"]
+  address_prefixes     = ["10.0.0.0/26"]
 }
 
 resource "azurerm_subnet" "fw-rg-02" {
   name                 = "jbox-subnet"
   resource_group_name  = azurerm_resource_group.fw-rg.name
   virtual_network_name = azurerm_virtual_network.fw-rg.name
-  address_prefixes      = ["10.0.0.64/26"]
+  address_prefixes     = ["10.0.0.64/26"]
 }
 
 resource "azurerm_public_ip" "fw-rg" {

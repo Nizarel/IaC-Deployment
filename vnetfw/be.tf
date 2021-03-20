@@ -1,9 +1,9 @@
-	# - Set BE Resource Group
-	# - Set Web Vnet
-	# 	○ Web Subnet
-	# - Web-Interface
-	# - Web-NSG
-  #    Web-VM01
+# - Set BE Resource Group
+# - Set Web Vnet
+# 	○ Web Subnet
+# - Web-Interface
+# - Web-NSG
+#    Web-VM01
 
 resource "azurerm_resource_group" "be-rg" {
   name     = "be-rg"
@@ -21,7 +21,7 @@ resource "azurerm_subnet" "be-rg" {
   name                 = "web-subnet"
   resource_group_name  = azurerm_resource_group.be-rg.name
   virtual_network_name = azurerm_virtual_network.be-rg.name
-  address_prefixes      = ["10.0.2.0/24"]
+  address_prefixes     = ["10.0.2.0/24"]
 }
 
 resource "azurerm_network_interface" "be-rg" {
@@ -50,20 +50,20 @@ resource "azurerm_network_security_group" "be-rg" {
     source_port_range          = "*"
     destination_port_range     = "80"
     source_address_prefix      = "*"
-    destination_address_prefix = azurerm_network_interface.be-rg.private_ip_address/32
+    destination_address_prefix = azurerm_network_interface.be-rg.private_ip_address / 32
   }
 
-      security_rule {
-        name                       = "SSH"
-        priority                   = 1001
-        direction                  = "Inbound"
-        access                     = "Allow"
-        protocol                   = "Tcp"
-        source_port_range          = "*"
-        destination_port_range     = "22"
-        source_address_prefix      = "*"
-        destination_address_prefix = "*"
-     }
+  security_rule {
+    name                       = "SSH"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
   security_rule {
     name                       = "rdp"
     priority                   = 110
@@ -75,7 +75,7 @@ resource "azurerm_network_security_group" "be-rg" {
     source_address_prefix      = "${azurerm_network_interface.jbox-rg.private_ip_address}/32"
     destination_address_prefix = "${azurerm_network_interface.be-rg.private_ip_address}/32"
   }
-  
+
 
   tags = {
     environment = "Production"
