@@ -10,6 +10,16 @@ resource "azurerm_resource_group" "jbox-rg" {
 
 }
 
+# module "jbox-name" {
+#   source = "../../modules/compute"
+#     vm_name = var.jb-vm-name
+#     subnet_id = azurerm_subnet.fw-rg-02.id
+#     location = azurerm_resource_group.jbox-rg.location
+#     admin_username = var.admin_username
+#     admin_password = var.admin_password
+#     rg = azurerm_resource_group.jbox-rg.name
+# }
+
 resource "azurerm_network_interface" "jbox-rg" {
   name                = "${var.jb-vm-name}-nic"
   location            = azurerm_resource_group.jbox-rg.location

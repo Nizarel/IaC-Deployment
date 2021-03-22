@@ -83,6 +83,16 @@ resource "azurerm_network_security_group" "be-rg" {
   }
 }
 
+# module "web-name" {
+#   source = "../../modules/compute"
+#     vm_name = var.web-vm-name
+#     subnet_id = azurerm_subnet.be-rg.id
+#     location = azurerm_resource_group.be-rg.location
+#     admin_username = var.admin_username
+#     admin_password = var.admin_password
+#     rg = azurerm_resource_group.be-rg.name
+# }
+
 resource "azurerm_network_interface_security_group_association" "be-rg" {
   network_interface_id      = azurerm_network_interface.be-rg.id
   network_security_group_id = azurerm_network_security_group.be-rg.id
@@ -135,12 +145,8 @@ resource "azurerm_virtual_machine_extension" "be-rg" {
 
   settings = <<SETTINGS
     {
-              "commandToExecute" : "apt-get -y update && apt-get install -y apache2"
+              "commandToExecute": "powershell Install-WindowsFeature -name Web-Server -IncludeManagementTools;"
     }
 SETTINGS
 
-
-  tags = {
-    environment = "Production"
-  }
 }
