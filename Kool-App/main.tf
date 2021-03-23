@@ -27,6 +27,10 @@ module "kool-vnet" {
   address_space       = ["10.0.0.0/23"]
   subnet_prefixes     = ["10.0.0.0/24", "10.0.1.0/24"]
   subnet_names        = ["${var.env}-app-subnet", "${var.env}-data-subnet"]
+
+    subnet_service_endpoints = {
+     "${var.env}-data-subnet" = ["Microsoft.Sql"]
+  }
   tags = {
     environment = var.env
   }
@@ -119,8 +123,37 @@ resource "azurerm_app_service_active_slot" "webappslot" {
   app_service_slot_name = "${var.env}-kool-wslot"
 }
 
+resource "azurerm_mssql_server" "sqlsvc" {
+  name                         = "${var.env}-kool-sqlsvc"
+  resource_group_name          = azurerm_resource_group.kool-rg.name
+  location                     = azurerm_resource_group.kool-rg.location
+  version                      = "12.0"
+  administrator_login          = var.login
+  administrator_login_password = var.pwd
+}
 
+# resource "azurerm_mssql_virtual_network_rule" "netrule" {
+#   name      = "${var.env}-kool-sql-vnet-rule"
+#   server_id = azurerm_mssql_server.sqlsvc.id
+#   subnet_id = module.kool-vnet.subnet_names.id 
+ 
+# }
 
+resource "azurerm_mssql_database" "sqldb" {
+  name           = "${var.env}-kool-db"
+  server_id      = azurerm_mssql_server.sqlsvc.id
+  collation      = "SQL_Latin1_General_CP1_CI_AS"
+  license_type   = "LicenseIncluded"
+  max_size_gb    = 4
+  read_scale     = true
+  sku_name       = var.sql-sku
+  zone_redundant = true
+
+  tags = {
+    environment = var.env
+  }
+
+}
 
 # resource "azurerm_api_management" "example" {
 #   name                = var.apim_name
