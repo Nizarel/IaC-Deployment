@@ -165,3 +165,61 @@ resource "azurerm_api_management" "apim" {
   sku_name            = var.apim-sku
 }
 
+resource "azurerm_stream_analytics_job" "stream_analytics_job" {
+  name                                     = "${var.env}-job"
+  resource_group_name = azurerm_resource_group.kool-rg.name
+  location            = azurerm_resource_group.kool-rg.location
+  compatibility_level                      = "1.1"
+  data_locale                              = "en-GB"
+  events_late_arrival_max_delay_in_seconds = 60
+  events_out_of_order_max_delay_in_seconds = 50
+  events_out_of_order_policy               = "Adjust"
+  output_error_policy                      = "Drop"
+  streaming_units                          = 3
+
+  tags = {
+    environment = "Example"
+  }
+
+  transformation_query = <<QUERY
+    SELECT *
+    INTO [YourOutputAlias]
+    FROM [YourInputAlias]
+QUERY
+
+}
+
+
+# data "azurerm_stream_analytics_job" "stream_analytics_job" {
+#   name                = "${var.env}-job"
+#   resource_group_name = azurerm_resource_group.kool-rg.name
+  
+# }
+
+resource "azurerm_iothub" "iothub" {
+  name                = "${var.env}-iothub"
+  resource_group_name = azurerm_resource_group.kool-rg.name
+  location            = azurerm_resource_group.kool-rg.location
+
+  sku {
+    name     = "S1"
+    capacity = "1"
+  }
+}
+
+resource "azurerm_stream_analytics_stream_input_iothub" "stream_input" {
+  name                         = "${var.env}-iothub-input"
+  # stream_analytics_job_name    = data.azurerm_stream_analytics_job.stream_analytics_job.name
+  stream_analytics_job_name    = azurerm_stream_analytics_job.stream_analytics_job.name
+  resource_group_name          = azurerm_resource_group.kool-rg.name
+  endpoint                     = "messages/events"
+  eventhub_consumer_group_name = "$Default"
+  iothub_namespace             = azurerm_iothub.iothub.name
+  shared_access_policy_key     = azurerm_iothub.iothub.shared_access_policy[0].primary_key
+  shared_access_policy_name    = "iothubowner"
+
+  serialization {
+    type     = "Json"
+    encoding = "UTF8"
+  }
+}
