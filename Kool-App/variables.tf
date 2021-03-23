@@ -1,11 +1,21 @@
 variable env {
   type    = string
   description = "Environment Name"
-  default = "test"
+  default = "prod"
 }
 variable location-name {
   type    = string
   default = "westeurope"
+}
+
+variable function-size {
+  type    = string
+  default = "EP2"
+}
+
+variable function-tier {
+  type    = string
+  default = "Premium"
 }
 
 # variable "apim_name" {
