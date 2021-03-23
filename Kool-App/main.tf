@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=2.46.0"
+      version = "=2.52.0"
     }
   }
 }
@@ -49,8 +49,8 @@ resource "azurerm_storage_account" "sa" {
   }
 }
 
-resource "azurerm_app_service_plan" "asp" {
-  name                = "${var.env}-kool-applan"
+resource "azurerm_app_service_plan" "func" {
+  name                = "${var.env}-kool-fplan"
   resource_group_name = azurerm_resource_group.kool-rg.name
   location            = azurerm_resource_group.kool-rg.location
   kind                = "functionapp"
@@ -73,16 +73,13 @@ resource "azurerm_application_insights" "appinsights" {
   location            = azurerm_resource_group.kool-rg.location
   application_type    = "web"
 
-    tags = {
-    environment = var.env
-  }
 }
 
 resource "azurerm_function_app" "function" {
   name                       = "${var.env}-kool-func"
   resource_group_name        = azurerm_resource_group.kool-rg.name
   location                   = azurerm_resource_group.kool-rg.location
-  app_service_plan_id        = azurerm_app_service_plan.asp.id
+  app_service_plan_id        = azurerm_app_service_plan.func.id
   storage_account_name       = azurerm_storage_account.sa.name
   storage_account_access_key = azurerm_storage_account.sa.primary_access_key
   https_only                 = true
@@ -93,10 +90,34 @@ resource "azurerm_function_app" "function" {
     "FUNCTIONS_WORKER_RUNTIME" = "custom"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.appinsights.instrumentation_key
   }
-  depends_on = [ azurerm_app_service_plan.asp, azurerm_application_insights.appinsights, azurerm_storage_account.sa] 
+  depends_on = [ azurerm_app_service_plan.func, azurerm_application_insights.appinsights, azurerm_storage_account.sa] 
 }
 
+resource "azurerm_app_service_plan" "asp" {
+    name                = "${var.env}-kool-applan"
+    resource_group_name = azurerm_resource_group.kool-rg.name
+    location            = azurerm_resource_group.kool-rg.location
+  sku {
+    size = var.function-size
+    tier = var.function-tier
+  }
+    tags = {
+    environment = var.env
+  }
+}
 
+resource "azurerm_app_service" "webapp" {
+    name                = "${var.env}-kool-webapp"
+    location            = azurerm_resource_group.kool-rg.location
+    resource_group_name = azurerm_resource_group.kool-rg.name
+    app_service_plan_id = azurerm_app_service_plan.asp.id
+}
+
+resource "azurerm_app_service_active_slot" "webappslot" {
+  resource_group_name   = azurerm_resource_group.kool-rg.name
+  app_service_name      = azurerm_app_service.webapp.name
+  app_service_slot_name = "${var.env}-kool-wslot"
+}
 
 
 
