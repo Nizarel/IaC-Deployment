@@ -15,18 +15,22 @@ provider "azurerm" {
 resource "azurerm_resource_group" "kool-rg" {
   name     = "${var.env}-kool-rg"
   location = var.location-name
+  tags = {
+    environment = var.env
+  }
 }
 
 module "kool-vnet" {
   source              = "Azure/vnet/azurerm"
   vnet_name           = "${var.env}-kool-vnet"
-  resource_group_name = azurerm_resource_group.fe-rg.name
+  resource_group_name = azurerm_resource_group.kool-rg.name
   address_space       = ["10.0.0.0/23"]
   subnet_prefixes     = ["10.0.0.0/24", "10.0.1.0/24"]
   subnet_names        = ["${var.env}-app-subnet", "${var.env}-data-subnet"]
   tags = {
     environment = var.env
   }
+  depends_on = [azurerm_resource_group.kool-rg]
 }
 
 
