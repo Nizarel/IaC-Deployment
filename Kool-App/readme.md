@@ -1,0 +1,1 @@
+terraform plan -var-file main.prod.tfvars
