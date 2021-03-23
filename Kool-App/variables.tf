@@ -1,34 +1,43 @@
-variable env {
-  type    = string
+variable "env" {
+  type        = string
   description = "Environment Name"
-  default = "prod"
+  default     = "prod"
 }
-variable location-name {
+variable "location-name" {
   type    = string
   default = "westeurope"
 }
 
-variable function-size {
+variable "function-size" {
   type    = string
   default = "EP2"
 }
 
-variable function-tier {
+variable "function-tier" {
   type    = string
   default = "Premium"
 }
 
-variable sql-sku {
-  type    = string
+variable "sql-sku" {
+  type = string
 }
 
-variable login {
-  type    = string
-  }
+variable "apim-sku" {
+  type = string
+}
 
-variable pwd {
+variable "apim-publisher_email" {
   type    = string
-  }
+  default = "company@terraform.io"
+}
+
+variable "login" {
+  type = string
+}
+
+variable "pwd" {
+  type = string
+}
 
 
 

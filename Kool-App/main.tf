@@ -28,8 +28,8 @@ module "kool-vnet" {
   subnet_prefixes     = ["10.0.0.0/24", "10.0.1.0/24"]
   subnet_names        = ["${var.env}-app-subnet", "${var.env}-data-subnet"]
 
-    subnet_service_endpoints = {
-     "${var.env}-data-subnet" = ["Microsoft.Sql"]
+  subnet_service_endpoints = {
+    "${var.env}-data-subnet" = ["Microsoft.Sql"]
   }
   tags = {
     environment = var.env
@@ -39,7 +39,7 @@ module "kool-vnet" {
 
 resource "azurerm_storage_account" "sa" {
   //name                      = "${var.env}-kool-sg"
-  name = "${var.env}koolsg"
+  name                      = "${var.env}koolsg"
   resource_group_name       = azurerm_resource_group.kool-rg.name
   location                  = azurerm_resource_group.kool-rg.location
   account_tier              = "Standard"
@@ -48,7 +48,7 @@ resource "azurerm_storage_account" "sa" {
   allow_blob_public_access  = false
   enable_https_traffic_only = true
 
-    tags = {
+  tags = {
     environment = var.env
   }
 }
@@ -61,12 +61,12 @@ resource "azurerm_app_service_plan" "func" {
   reserved            = true
 
 
-# Add SKU Env Condition!!
+  # Add SKU Env Condition!!
   sku {
     size = var.function-size
     tier = var.function-tier
   }
-    tags = {
+  tags = {
     environment = var.env
   }
 }
@@ -91,30 +91,30 @@ resource "azurerm_function_app" "function" {
   version                    = "~3"
 
   app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME" = "custom"
+    "FUNCTIONS_WORKER_RUNTIME"       = "custom"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.appinsights.instrumentation_key
   }
-  depends_on = [ azurerm_app_service_plan.func, azurerm_application_insights.appinsights, azurerm_storage_account.sa] 
+  depends_on = [azurerm_app_service_plan.func, azurerm_application_insights.appinsights, azurerm_storage_account.sa]
 }
 
 resource "azurerm_app_service_plan" "asp" {
-    name                = "${var.env}-kool-applan"
-    resource_group_name = azurerm_resource_group.kool-rg.name
-    location            = azurerm_resource_group.kool-rg.location
+  name                = "${var.env}-kool-applan"
+  resource_group_name = azurerm_resource_group.kool-rg.name
+  location            = azurerm_resource_group.kool-rg.location
   sku {
     size = var.function-size
     tier = var.function-tier
   }
-    tags = {
+  tags = {
     environment = var.env
   }
 }
 
 resource "azurerm_app_service" "webapp" {
-    name                = "${var.env}-kool-webapp"
-    location            = azurerm_resource_group.kool-rg.location
-    resource_group_name = azurerm_resource_group.kool-rg.name
-    app_service_plan_id = azurerm_app_service_plan.asp.id
+  name                = "${var.env}-kool-webapp"
+  location            = azurerm_resource_group.kool-rg.location
+  resource_group_name = azurerm_resource_group.kool-rg.name
+  app_service_plan_id = azurerm_app_service_plan.asp.id
 }
 
 resource "azurerm_app_service_active_slot" "webappslot" {
@@ -136,7 +136,7 @@ resource "azurerm_mssql_server" "sqlsvc" {
 #   name      = "${var.env}-kool-sql-vnet-rule"
 #   server_id = azurerm_mssql_server.sqlsvc.id
 #   subnet_id = module.kool-vnet.subnet_names.id 
- 
+
 # }
 
 resource "azurerm_mssql_database" "sqldb" {
@@ -155,27 +155,13 @@ resource "azurerm_mssql_database" "sqldb" {
 
 }
 
-# resource "azurerm_api_management" "example" {
-#   name                = var.apim_name
-#   location            = azurerm_resource_group.example.location
-#   resource_group_name = azurerm_resource_group.example.name
-#   publisher_name      = "My Company"
-#   publisher_email     = "company@terraform.io"
 
-#   sku_name = "Developer_1"
-# }
+resource "azurerm_api_management" "apim" {
+  name                = "${var.env}-apim"
+  resource_group_name = azurerm_resource_group.kool-rg.name
+  location            = azurerm_resource_group.kool-rg.location
+  publisher_name      = "${var.env}-apim"
+  publisher_email     = var.apim-publisher_email
+  sku_name            = var.apim-sku
+}
 
-# resource "azurerm_api_management_api" "example" {
-#   name                = "example-api"
-#   resource_group_name = azurerm_resource_group.example.name
-#   api_management_name = azurerm_api_management.example.name
-#   revision            = "1"
-#   display_name        = var.api_name
-#   path                = var.api_path
-#   protocols           = ["https"]
-
-#   import {
-#     content_format = "swagger-link-json"
-#     content_value  = var.api_url
-#   }
-# }
