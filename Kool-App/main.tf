@@ -117,11 +117,13 @@ resource "azurerm_app_service" "webapp" {
   app_service_plan_id = azurerm_app_service_plan.asp.id
 }
 
-resource "azurerm_app_service_active_slot" "webappslot" {
-  resource_group_name   = azurerm_resource_group.kool-rg.name
-  app_service_name      = azurerm_app_service.webapp.name
-  app_service_slot_name = "${var.env}-kool-wslot"
-}
+
+
+#resource "azurerm_app_service_active_slot" "webappslot" {
+#  resource_group_name   = azurerm_resource_group.kool-rg.name
+#  app_service_name      = azurerm_app_service.webapp.name
+#  app_service_slot_name = "${var.env}-kool-wslot"
+#}
 
 resource "azurerm_mssql_server" "sqlsvc" {
   name                         = "${var.env}-kool-sqlsvc"
@@ -197,7 +199,7 @@ QUERY
 # }
 
 resource "azurerm_iothub" "iothub" {
-  name                = "${var.env}-iothub"
+  name                = "${var.env}-niothub"
   resource_group_name = azurerm_resource_group.kool-rg.name
   location            = azurerm_resource_group.kool-rg.location
 
